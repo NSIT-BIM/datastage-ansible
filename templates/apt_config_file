@@ -1,0 +1,11 @@
+{
+{% for node in apt_configuration|default(item.nodes) %}
+        node "{{ node.name }}"
+        {
+                fastname "{{ node.fastname }}"
+                pools {% for pool in node.pools|default(['']) %}"{{ pool }}" {% endfor %}
+                resource disk "{{ node.disk.path }}" {pools {% for pool in node.disk.pools|default(['']) %}"{{ pool }}" {% endfor %} }
+                resource scratchdisk "{{ node.scratch.path }}" {pools {% for pool in node.scratch.pools|default(['']) %}"{{ pool }}" {% endfor %}}
+        }
+{% endfor %}
+}

@@ -1,0 +1,46 @@
+# role: ds_server_admin
+# file: tasks/odbc.yml
+# description: Set odbc drivers properties
+
+---
+
+# Add header for the connection
+- name: update odbc file step1
+  when: odbc is defined 
+  with_items: "{{ odbc }}"
+  ini_file:
+     path: "{{ DSHOME  }}/.odbc.ini"
+     section: ODBC Data Sources
+     backup: yes
+     option: "{{ item.name }}"
+     value: "{{ item.label }}"
+     no_extra_spaces: yes
+
+# Generate configuration based on default properties     
+- name: generate odbc configuration 
+  when: odbc is defined
+  ds-ini:
+     path: "{{ DSHOME  }}/.odbc.ini"
+     configuration: "{{ odbc }}"
+  register: odbcini
+
+# Update configuration in odbc.ini  
+- name: update odbc file step2
+  when: odbc is defined
+  register: odbc_status
+  with_subelements:
+      - "{{ odbcini['configuration'] }}"
+      - "configuration"
+  ini_file:
+       path: "{{ DSHOME  }}/.odbc.ini"
+       section: "{{ item.0.name }}"
+       option: "{{ item.1[0] }}"
+       value: "{{ item.1[1] }}"
+       backup: yes
+       no_extra_spaces: yes
+
+# Restart engine (RESTART environnement variable must be set to TRUE)
+- name: restart engine
+  shell: "{{ item }}"
+  with_items: "{{ restart.engine }}"
+  when: odbc_status.changed and lookup('env','RESTART') == 'TRUE'   

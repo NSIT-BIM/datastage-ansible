@@ -1,0 +1,38 @@
+# role: ds_project_admin
+# file: tasks/props.yml
+# description: Set project properties
+# Some properties are set through the api (like with the dsadmin command)
+# Some properties are set by modifying the DSParams file
+# The difference is made transparent through the mapping variable "configuration.properties" defined in defaults/main.yml
+
+---
+# Set the api properties
+# depends on ds-props.py
+- name: set properties
+  when: properties is defined and properties[item] is defined
+  ds-props:
+     project: "{{ project }}"
+     dsproperty: "{{ item }}"
+     value: "{{ properties[item] }}"
+     props: "{{ project_facts.properties | default({}) }}"
+     #loop: "{{ lookup('dict', configuration.properties.dsapi, wantlist=True) }}"
+  with_items: "{{ configuration.properties.dsapi }}"
+  register: result
+  loop_control:
+    label: "{{ item }} => {{ result['value']  }}"
+
+# Update DSParams file 
+- name: update DSParams
+  when: properties is defined and properties[item.label] is defined
+  with_items: "{{ configuration.properties.dsparams }}"
+  loop_control:
+     label: "{{ item.label }} => {{ properties[item.label] | default('_') }}"
+  ini_file:
+     path: "{{ project_facts.path }}/DSParams"
+     section: PROJECT
+     backup: yes
+     option: "{{ item.key }}"
+     value: "{{ item.map[properties[item.label]] | default(properties[item.label]) }}"
+     no_extra_spaces: yes
+
+

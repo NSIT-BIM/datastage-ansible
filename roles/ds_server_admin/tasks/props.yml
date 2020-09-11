@@ -1,0 +1,14 @@
+# role: ds_server_admin
+# file: tasks/props.yml
+# description: Set iis  properties
+# depends on ds-iisprops.py
+
+---
+- name: set properties
+  when: properties is defined
+  ds-iisprops:
+     key: "{{ item.key }}"
+     value: "{{ item.value }}"
+     absent: "{{ item.value.absent | default(False) }}"
+     #loop: "{{ lookup('dict', configuration.properties.dsapi, wantlist=True) }}"
+  loop: "{{ lookup('dict',properties | default({}),wantlist=True) }}"

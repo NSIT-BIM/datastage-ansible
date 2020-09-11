@@ -1,0 +1,40 @@
+# role: ds_server_admin
+# file: tasks/status.yml
+# description: Hosts and services status
+# todo:  operation console...
+
+---
+# ping engine host
+- name: Engine up
+  ping:
+  tags: engine
+# ping services host
+- name: Services up
+  delegate_to: "{{ is.domain_host }}"
+  ping:
+# ping xmeta host
+- name: Xmeta up
+  delegate_to: "{{ is.xmeta_host }}"
+  ping:
+# check xmeta status
+- name: Xmeta status
+  shell: "{{ IISPath }}/ASBServer/bin/AppServerAdmin.sh -user {{ is.user }} -password {{ is.password }} -test"
+  delegate_to: "{{ is.domain_host }}"
+  changed_when: False
+# check services status
+- name: Services status
+  uri: 
+    validate_certs: no
+    url: "https://{{ is.domain }}/ibm/iis/launchpad"
+# check engine status
+- name: Engine status
+  shell: ps -p $(cat $(cat /.dshome)/.dsrpcdpid)
+  changed_when: False
+# check asb agent status
+- name: Agent status
+  shell: ps -p $(cat {{ IISPath }}/ASBNode/logs/Agent.pid)
+  changed_when: False
+# check monitoring status
+- name: Monitoring status
+  shell: ps -p $(cat {{ IISPath }}/Server/PXEngine/java/.jobmonpid)
+  changed_when: False

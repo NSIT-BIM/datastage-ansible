@@ -1,0 +1,17 @@
+# role: ds_server_admin
+# file: tasks/start.yml
+# description: Start services
+# todo: database, agents, operation console...
+
+
+---
+  
+- name: start Was
+  shell: "{{ start.domain }}"
+  delegate_to: "{{ groups['domain'][0] }}"
+  tags: was
+    
+- name: start engine
+  shell: "{{ start.engine }}"
+  tags: engine
+  

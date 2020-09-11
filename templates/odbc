@@ -1,0 +1,13 @@
+[ODBC DATA SOURCES]
+<localuv>
+DBMSTYPE = UNIVERSE
+network = TCP/IP
+service = uvserver
+host = localhost
+
+{% for db in odbc %}
+
+<{{ db }}>
+DBMSTYPE = ODBC
+
+{% endfor %}

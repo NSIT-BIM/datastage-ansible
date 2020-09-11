@@ -1,0 +1,53 @@
+# role: ds_server_admin
+# file : tasks/main.yml
+# description: main task for the server adminstrations role. 
+
+---
+
+# Check servers and services status
+- name: status
+  import_tasks: status.yml
+  tags: never,status
+
+# Set IIS properties 
+- name: properties
+  import_tasks: props.yml
+  tags: never,config,props
+  delegate_to: "{{ is.domain_host }}"
+
+# Set engine properties (uvconfig file)
+- name: uvconfig
+  import_tasks: uvconfig.yml
+  tags: never,config,uvconfig
+  when: uvconfig is defined
+  environment:
+      DSHOME: "{{ DSHOME }}"
+      ASBHOME: "{{ ASBHOME }}"
+      LD_LIBRARY_PATH: "{{ LD_LIBRARY_PATH }}"
+
+# Set odbc drivers properties (odbc.ini file)
+- name: odbc
+  import_tasks: odbc.yml
+  tags: never,config,odbc
+  environment:
+      DSHOME: "{{ DSHOME }}"
+      ASBHOME: "{{ ASBHOME }}"
+      LD_LIBRARY_PATH: "{{ LD_LIBRARY_PATH }}"
+
+# Set engine credentials
+- name: credentials
+  import_tasks: creds.yml
+  tags: never,config,creds 
+  when: credentials is defined
+  environment:
+      DSHOME: "{{ DSHOME }}"
+      ASBHOME: "{{ ASBHOME }}"
+      LD_LIBRARY_PATH: "{{ LD_LIBRARY_PATH }}"
+
+- name: stop
+  import_tasks: stop.yml
+  tags: never,stop,restart
+
+- name: start
+  import_tasks: start.yml
+  tags: never,start,restart

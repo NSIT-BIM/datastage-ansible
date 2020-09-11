@@ -1,0 +1,30 @@
+# role: ds_server_admin
+# file: tasks/creds.yml
+# description: Set engine credential mapping
+# depends on ds-creds.py
+
+---
+# set default credentials
+- name: set default credentials
+  when: credentials is defined and 'default' in credentials 
+  ds-creds:
+      user: "{{ is.user }}"
+      server: "{{ inventory_hostname | upper }}"
+      password: "{{ is.password }}"
+      absent: "{{ credentials.default.absent | default(False) }}"
+      credUser: "{{ credentials.default.user | default() }}"
+      credPassword: "{{ credentials.default.password | default() }}"
+
+# set credentials for user name
+- name: set users credentials
+  when: credentials is defined and 'users' in credentials
+  with_items: "{{ credentials.users }}"
+  ds-creds:
+      user: "{{ is.user }}"
+      server: "{{ inventory_hostname | upper }}"
+      password: "{{ is.password }}"
+      absent: "{{ item.absent | default(False) }}"
+      isid: "{{ item.name }}"
+      credUser: "{{ item.user | default() }}"
+      credPassword: "{{ item.password | default() }}"     
+ 

@@ -1,0 +1,25 @@
+# role: ds_server_admin
+# file : vars/main.yml
+# description: main variables for the server adminstrations role. 
+
+
+---
+# Commands to start, stop, restart the services
+start:
+  domain: /etc/init.d/ISFServer run
+  engine: /etc/init.d/ds.rc start
+stop:
+  engine: /etc/init.d/ds.rc stop
+  domain: /etc/init.d/ISFServer stop
+restart:
+  engine: 
+      - "{{ stop.engine }}"
+      - "{{ start.engine }}"
+
+# hosts, ports configurations      
+is:
+  domain: "{{ groups['domain'][0] }}:{{ hostvars[groups['domain'][0]].port }}"
+  domain_host: "{{ groups['domain'][0] }}"
+  user: "{{ user }}"
+  password: "{{ password }}" 
+  xmeta_host: "{{ groups['xmeta'][0] }}"

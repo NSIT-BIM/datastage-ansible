@@ -1,0 +1,32 @@
+# role: ds_project_admin
+# file: tasks/perms.yml
+# description: Set project permissions for users and groups
+# the roles must have been granted before
+# valide roles are: Developer, OperationsViewer, Operator, ProductionManager, SuperOperator
+---
+# set permissions for users
+- name: set user permissions
+  when: permissions is defined and 'users' in permissions
+  ds-perms:
+      project: "{{ project }}"
+      user: "{{ is.user }}"
+      password: "{{ is.password }}"
+      isid: "{{ item.key }}"
+      role: "{{ item.value.role }}"
+      absent: "{{ item.value.absent | default(False) }}"
+      server: "{{ inventory_hostname | upper }}"
+  loop: "{{ lookup('dict',permissions.users,wantlist=True) }}"
+
+# set permissions for groups
+- name: set group permissions
+  when: permissions is defined and 'groups' in permissions
+  ds-perms:
+      project: "{{ project }}"
+      user: "{{ is.user }}"
+      password: "{{ is.password }}"
+      isid: "{{ item.key }}"
+      role: "{{ item.value.role }}"
+      absent: "{{ item.value.absent | default(False) }}"
+      server: "{{ inventory_hostname | upper }}"
+      idtype: group
+  loop: "{{ lookup('dict',permissions.groups|default({}),wantlist=True) }}"

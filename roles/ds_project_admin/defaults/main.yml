@@ -1,0 +1,118 @@
+# role: ds_project_admin
+# file : defaults/main.yml
+# description: default variables for the project administration role. 
+
+---
+# template for the node configuration file
+apt_config_template:
+       name: node{{item}}
+       fastname: "{{ inventory_hostname }}"
+       disk:
+         path: "{{ datasets }}"
+       scratch:
+         path: "{{ scratch }}"
+
+# mapping for the project properties
+configuration:
+   properties:
+           #properties set through the api (dsadmin)
+           dsapi:
+                - OSH Visible 
+                - Job Administration
+                - RCP
+                - Protected
+                - Advanced Runtime Options
+                - Deploy Custom Action
+                - Deploy Directory Template
+                - Remote Base Directory
+                - Deploy Generate XML
+                - Purges
+           #properties set through the DSParams file
+           dsparams:
+                - key: RTCPDefault
+                  label: RCP For New Links
+                  map: 
+                     True: 1
+                     False: 0
+                - key: InternalRefsEnabled
+                  label: Interal References Editing
+                  map:
+                    True: 1
+                    False: 0
+                - key: JobSeqCheckPoints
+                  label: Add Checkpoints
+                  map:
+                    True: 1
+                    False: 0                  
+                - key: JobSeqHandleAborts
+                  label: Handle Failed Activities
+                  map:
+                    True: 1
+                    False: 0                  
+                - key:  JobSeqLogJobErrors
+                  label: Log Warnings
+                  map:
+                    True: 1
+                    False: 0
+                - key: JobSeqLogJobReports
+                  label: Log Report
+                  map:
+                    True: 1
+                    False: 0                  
+                - key: JobSeqNoSummary
+                  label: Supress Summary
+                  map:
+                    True: 1
+                    False: 0                  
+                - key: MetaStageModeEnabled
+                  label: Generate Operational Metadata
+                  map:
+                    True: 1
+                    False: 0                  
+                - key: OperatorFullLogView
+                  label: Operator Ful Log
+                  map:
+                    True: 1
+                    False: 0                  
+                - key: ReadCacheSize
+                  label: Read Cache Size
+                - key: WriteCacheSize
+                  label: Write Cache Size
+                - key: DefaultDateFormat
+                  label: Date Format
+                - key: EnableRowBuffer
+                  label: Row Buffer
+                  map:
+                    True: 1
+                    False: 0
+                - key: UseIPC
+                  label: Inter Process
+                  map:
+                    True: 1
+                    False: 0                
+                - key: IPCBufferSize
+                  label: Buffer Size
+                - key: IPCTimeout
+                  label: IPC Timeout
+                - key: PXMsgHandler
+                  label: Message Handler
+                - key: PXDateFormat
+                  label: Px Date Format
+                - key: PXTimeFormat
+                  label: Px Time Format            
+                - key: PXTimeStampFormat
+                  label: Px TimeStamp Format
+                - key: PXDecimalSeparator
+                  label: Px Decimal Separator
+                - key: PXGridGUIEnabled
+                  label: Grid
+                  map:
+                    True: 1
+                    False: 0
+                - key: EnableMetadataSharing
+                  label: Share Metadata
+                  map:
+                    True: 1
+                    False: 0
+                - key: WLMQueueName
+                  label: WLM Queue

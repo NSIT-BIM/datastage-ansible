@@ -1,0 +1,16 @@
+# role: ds_server_admin
+# file: tasks/stop.yml
+# description: Stop services
+# todo: database, agents, operation console...
+
+---
+- name: stop engine
+  shell: "{{ stop.engine }}"
+  tags: engine,stop    
+
+- name: stop Was
+  shell: "{{ stop.domain }}"
+  delegate_to: "{{ groups['domain'][0] }}"
+  tags: was,stop
+    
+

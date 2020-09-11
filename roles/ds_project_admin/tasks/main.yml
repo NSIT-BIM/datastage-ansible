@@ -1,0 +1,76 @@
+# role: ds_project_admin
+# file : tasks/main.yml
+# description: main task for the project adminstrations role. 
+
+---
+# print project name
+- name: project
+  debug:
+    msg: "=======> {{ project }} <======="
+  tags: always 
+
+
+# create project 
+# depends on ds-project.py
+- name: provision project
+  environment:
+      DSHOME: "{{ DSHOME }}"
+      ASBHOME: "{{ ASBHOME }}"
+      LD_LIBRARY_PATH: "{{ LD_LIBRARY_PATH }}"
+  ds-project:
+    project: "{{ project }}"
+    absent: "{{ absent | default(False) }}"
+    domain: "{{ is.domain }}"
+    server: "{{ inventory_hostname | upper }}"
+    user: "{{ is.user }}"
+    password: "{{ is.password }}"
+  tags: config,create
+  register: ds_project
+
+# set permissions    
+- name: permissions
+  import_tasks: perms.yml
+  environment:
+        DSHOME: "{{ DSHOME }}"
+        ASBHOME: "{{ ASBHOME }}"
+        LD_LIBRARY_PATH: "{{ LD_LIBRARY_PATH }}" 
+  tags: perms,config
+
+# set project facts  
+- name: gather project facts
+  environment:
+        DSHOME: "{{ DSHOME }}"
+        ASBHOME: "{{ ASBHOME }}"
+        LD_LIBRARY_PATH: "{{ LD_LIBRARY_PATH }}"
+  ds-facts:
+    project: "{{ project }}"
+  register: project_facts
+  tags: setup,config,always
+
+# set odbc drivers configuration
+- name: odbc
+  import_tasks: odbc.yml
+  tags: odbc,config
+
+# set project environnement variables  
+- name: configure project environment
+  import_tasks: env.yml
+  tags: config,env
+  environment: 
+      DSHOME: "{{ DSHOME }}"
+      ASBHOME: "{{ ASBHOME }}"
+      LD_LIBRARY_PATH: "{{ LD_LIBRARY_PATH }}"
+
+# configure project level parallelism      
+- name: apt config file
+  import_tasks: aptconf.yml
+  tags: config,apt
+
+# set project properties
+- name: configure project properties
+  import_tasks: props.yml
+  tags: config,props
+  environment:
+      DSHOME: "{{ DSHOME }}"
+      ASBHOME: "{{ ASBHOME }}"
+      LD_LIBRARY_PATH: "{{ LD_LIBRARY_PATH }}"

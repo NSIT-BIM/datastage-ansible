@@ -1,0 +1,35 @@
+# role: ds_project_admin
+# file: tasks/aptconf.yml
+# description: Generate apt configuration and writes it in file
+
+---
+
+# Generate configuration for all nodes
+- name: generate nodes
+  when: nodes is defined and (apt_configuration is not defined or apt_configuration|length < nodes)
+  set_fact:
+     apt_configuration: "{{ (apt_configuration | default([])) + [apt_config_template] }}"
+  with_sequence: "start=1 count={{ nodes|default(0) }}"
+
+- debug:
+      var: apt_configuration
+
+# Write configuration to file 
+# depends on template apt_config_file  
+- name: apt_config_file
+  when: apt_configuration is defined
+  template:
+     dest: "{{ config_file | default(APT_CONFIG_FILE) }}"
+     src: "templates/apt_config_file"
+     backup: yes
+     trim_blocks: no
+
+- name: multiple apt_config_files
+  when: apt_configurations is defined
+  with_items: "{{ apt_configurations }}"
+  template:
+     dest: "{{ item.apt_config_file }}"
+     src: "templates/apt_config_file"
+     backup: yes
+     trim_blocks: no
+

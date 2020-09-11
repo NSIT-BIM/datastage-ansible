@@ -1,0 +1,16 @@
+# role: ds_project_admin
+# file : vars/main.yml
+# description: main variables for the project administration role
+
+---
+# information server domain/port and credentials
+# domain/port should be defined in inventory file
+# password should be definid in a secured variable file
+is:
+  domain: "{{ groups['domain'][0] }}:{{ hostvars[groups['domain'][0]].port }}"
+  user: "{{ user }}"
+  password: "{{ password }}"
+
+# This variable is used to be able to define only the name of the file (apt_config_file variable)
+# instead of the full path
+APT_CONFIG_FILE: "{{ project_facts.env.APT_CONFIG_FILE | dirname+'/'+apt_config_file }}"

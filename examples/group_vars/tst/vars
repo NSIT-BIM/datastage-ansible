@@ -1,0 +1,21 @@
+# file : group_vars/var
+# description: example group vars for tst environnement
+# password are defined in the group_vars/vault (that should be encrypted)
+---
+env: tst
+user: isadmin
+password: "{{isadminPassword}}"
+dsadm: dsadm
+datasets: /opt/IBM/InformationServer/Server/Datasets
+scratch: /opt/IBM/InformationServer/Server/Scratch
+permissions:
+      groups:
+           developerGroup:
+              role: Developer
+
+db:
+  postgres:
+      host: pg_host
+      user: pguser
+      password: "{{pgPassword}}"
+      port: 5432

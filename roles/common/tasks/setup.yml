@@ -1,0 +1,28 @@
+# role: common
+# file: tasks/setup.yml
+# description: Gets the necessary environnement variables
+# Sets them as facts 
+
+---
+# Loads dsenv file
+# echoes variables to register in a variable
+- name: get dsenv
+  shell: ". $(cat /.dshome)/dsenv;echo $DSHOME;echo $ASBHOME;echo $LD_LIBRARY_PATH"
+  register: _dsenv
+  changed_when: false
+
+# Maps the variables to facts 
+- name: setup env
+  set_fact:
+      DSHOME: "{{ _dsenv.stdout_lines[0] }}"
+      ASBHOME: "{{ _dsenv.stdout_lines[1] }}"
+      LD_LIBRARY_PATH: "{{ _dsenv.stdout_lines[2] }}"
+  changed_when: false
+
+# Debug 
+- name: debug env
+  tags: debug
+  debug: 
+      msg: 
+      - "DSHOME {{ DSHOME }}"
+      - "ASBHOME {{ ASBHOME }}"

@@ -1,0 +1,13 @@
+# role: common
+# file : tasks/main.yml
+# description: main task for the common role. 
+# This role is intended to be called before other roles.
+
+---
+# Call the setup task
+# Sets the followings facts about the environnement
+# DSHOME, ASBHOME, LD_LIBRARY_PATH 
+- name: setup env
+  import_tasks: setup.yml
+  tags: always
+

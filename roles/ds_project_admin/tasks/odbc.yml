@@ -1,0 +1,12 @@
+# role: ds_project_admin
+# file: tasks/odbc.yml
+# description: configure odbc drivers
+---
+- name: update uvodbc file
+  when: odbc is defined 
+  template:
+     dest: "{{ project_facts.path }}/uvodbc.config"
+     src: "templates/odbc"
+     backup: yes
+
+

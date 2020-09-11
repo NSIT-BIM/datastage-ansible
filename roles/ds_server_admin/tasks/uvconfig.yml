@@ -1,0 +1,25 @@
+# role: ds_server_admin
+# file: tasks/uvconfig.yml
+# description: Set engine configuration
+---
+# Set properties in uvconfig file  
+- name: set uvconfig properties
+  loop: "{{ lookup('dict', uvconfig|default({}), wantlist=True) }}"
+  register: uv
+  lineinfile:
+      path: "{{ DSHOME }}/uvconfig"
+      regexp: '^{{ item.key }} '
+      line: "{{ item.key }} {{ item.value }}" 
+      backup: yes
+      backrefs: yes
+
+# launch uvregen command
+- name: uvregen
+  shell: "{{ DSHOME }}/bin/uv -admin -regen"
+  when: uv.changed
+
+# restart engine (environnement variable RESTART must be set to "TRUE")
+- name: restart engine
+  shell: "{{ item }}"
+  with_items: "{{ restart.engine }}"
+  when: uv.changed and lookup('env','RESTART') == 'TRUE' 

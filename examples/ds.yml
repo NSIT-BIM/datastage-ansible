@@ -1,0 +1,38 @@
+# file : ds.yml
+# description: example playbook for iis administration
+
+---
+# these first variables are mandatory
+# engine is defined in the inventory file but hosts could be hard coded or reference a variable
+- hosts: engine
+  remote_user: root
+  environment:
+          IISPath: /opt/IBM/InformationServer
+  roles:
+      - common
+      - ds_server_admin
+  vars:
+        # default credentials for the engine.
+        credentials:
+            default:
+               user: "{{ dsadm }}"
+               password: "{{ dsadmPassword }}"
+            users:
+                 - name: developerUser
+                   user: dsadm
+                   password: "{{ dsadmPassword }}"
+
+        # uvconfig properties
+        uvconfig:
+            MFILES: 200
+        
+        # odbc connections definitions
+        odbc:
+           - name: postgres
+             type: PostgreSQL Wire Protocol
+             label: test pg
+             configuration:
+                 HostName: "{{ db.postgres.host }}"
+                 DataBase: postgres
+                 PortNumber: "{{ db.postgres.port }}"
+
