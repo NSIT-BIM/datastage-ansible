@@ -21,9 +21,10 @@
     project: "{{ project }}"
     absent: "{{ absent | default(False) }}"
     domain: "{{ is.domain }}"
-    server: "{{ inventory_hostname | upper }}"
+    server: "{{ server | default(inventory_hostname | upper) }}"
     user: "{{ is.user }}"
     password: "{{ is.password }}"
+    path: "{{ projectPath }}/{{ project }}"
   tags: config,create
   register: ds_project
 

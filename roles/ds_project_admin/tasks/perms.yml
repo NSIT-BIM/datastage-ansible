@@ -15,7 +15,7 @@
       role: "{{ item.value.role }}"
       absent: "{{ item.value.absent | default(False) }}"
       server: "{{ inventory_hostname | upper }}"
-  loop: "{{ lookup('dict',permissions.users,wantlist=True) }}"
+  loop: "{{ lookup('dict',permissions.users | default({}),wantlist=True) }}"
 
 # set permissions for groups
 - name: set group permissions
@@ -29,4 +29,4 @@
       absent: "{{ item.value.absent | default(False) }}"
       server: "{{ inventory_hostname | upper }}"
       idtype: group
-  loop: "{{ lookup('dict',permissions.groups|default({}),wantlist=True) }}"
+  loop: "{{ lookup('dict',permissions.groups | default({}),wantlist=True) }}"
