@@ -26,8 +26,8 @@ def run_module():
         project=dict(type='str', required=True),
         domain=dict(type='str',default=''),
         server=dict(type='str',default=''),
-        user=dict(type='str',default=''),
-        password=dict(type='str',default='',no_log=True),
+        user=dict(type='str',default='', no_log=False),
+        password=dict(type='str',default='',no_log=False),
         path=dict(type='str',default=''),
         absent=dict(type='bool',default=False), 
     )
@@ -45,7 +45,7 @@ def run_module():
         module.exit_json(**result)
 
     import os
-    from ansible.module_utils.ibm_datastage_api import DSAPI
+    from ansible_collections.nsitbim.datastage.plugins.module_utils.ibm_datastage_api import DSAPI
       
     hproj = None
     dsapi = DSAPI()
@@ -60,10 +60,10 @@ def run_module():
     DS_PROJECT = module.params['project']
     DS_LOCATION = module.params['path']
 
-    res, err = dsapi.DSLoadLibrary(os.environ['DSHOME']+'/lib/libvmdsapi.so')
+    dsapi.DSLoadLibrary(os.environ['DSHOME']+'/lib/libvmdsapi.so')
     dsapi.DSSetServerParams(DS_DOMAIN_NAME, DS_USER_NAME, DS_PASSWORD, DS_SERVER)
-   
     res, err = dsapi.DSGetProjectList()
+
     if err:
       module.fail_json(msg="Cant't get projects list : {}".format(err), **result)
     

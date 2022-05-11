@@ -17,7 +17,7 @@
       DSHOME: "{{ DSHOME }}"
       ASBHOME: "{{ ASBHOME }}"
       LD_LIBRARY_PATH: "{{ LD_LIBRARY_PATH }}"
-  ds-project:
+  ds_project:
     project: "{{ project }}"
     absent: "{{ absent | default(False) }}"
     domain: "{{ is.domain }}"
@@ -43,7 +43,7 @@
         DSHOME: "{{ DSHOME }}"
         ASBHOME: "{{ ASBHOME }}"
         LD_LIBRARY_PATH: "{{ LD_LIBRARY_PATH }}"
-  ds-facts:
+  ds_facts:
     project: "{{ project }}"
   register: project_facts
   tags: setup,config,always

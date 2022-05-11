@@ -14,6 +14,19 @@
 - debug:
       var: apt_configuration
 
+# Create folders
+- name: create directories
+  when: apt_configuration is defined
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: '0755'
+    group: "{{ dstage | default('dstage') }}"
+    owner: "{{ dsadm | default('dsadm') }}"
+  with_items: "{{ apt_configuration | map(attribute='disk') }} + {{ apt_configuration | map(attribute='scratch') }}"
+
+
+
 # Write configuration to file 
 # depends on template apt_config_file  
 - name: apt_config_file

@@ -51,7 +51,7 @@ def run_module():
 
     import os
     import re
-    from ansible.module_utils.ibm_datastage_api import DSAPI
+    from ansible_collections.nsitbim.datastage.plugins.module_utils.ibm_datastage_api import DSAPI
       
     hproj = None
     dsapi = DSAPI()

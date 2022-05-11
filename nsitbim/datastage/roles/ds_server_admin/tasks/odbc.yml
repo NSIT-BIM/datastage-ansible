@@ -7,37 +7,32 @@
 # Add header for the connection
 - name: update odbc file step1
   when: odbc is defined 
-  with_items: "{{ odbc }}"
+  #with_items: "{{ odbc }}"
   ini_file:
      path: "{{ DSHOME  }}/.odbc.ini"
      section: ODBC Data Sources
      backup: yes
-     option: "{{ item.name }}"
-     value: "{{ item.label }}"
+     option: "{{ item.key }}"
+     value: "{{ item.value.label }}"
      no_extra_spaces: yes
+  loop: "{{ lookup('dict',odbc | default({}),wantlist=True) }}"
 
-# Generate configuration based on default properties     
-- name: generate odbc configuration 
-  when: odbc is defined
-  ds-ini:
-     path: "{{ DSHOME  }}/.odbc.ini"
-     configuration: "{{ odbc }}"
-  register: odbcini
 
 # Update configuration in odbc.ini  
 - name: update odbc file step2
   when: odbc is defined
   register: odbc_status
   with_subelements:
-      - "{{ odbcini['configuration'] }}"
-      - "configuration"
+      - "{{ lookup('dict',odbc | default({}),wantlist=True) }}"
+      - "value.configuration"
   ini_file:
        path: "{{ DSHOME  }}/.odbc.ini"
-       section: "{{ item.0.name }}"
-       option: "{{ item.1[0] }}"
-       value: "{{ item.1[1] }}"
-       backup: yes
+       section: "{{ item.0.key }}"
+       option: "{{ item.1.keys() | first }}"
+       value: "{{ item.1.values() | first }}"
+       #backup: yes
        no_extra_spaces: yes
+
 
 # Restart engine (RESTART environnement variable must be set to TRUE)
 - name: restart engine

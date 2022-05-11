@@ -7,26 +7,26 @@
 # set permissions for users
 - name: set user permissions
   when: permissions is defined and 'users' in permissions
-  ds-perms:
+  ds_perms:
       project: "{{ project }}"
       user: "{{ is.user }}"
       password: "{{ is.password }}"
       isid: "{{ item.key }}"
       role: "{{ item.value.role }}"
       absent: "{{ item.value.absent | default(False) }}"
-      server: "{{ inventory_hostname | upper }}"
+      server: "{{ hostvars[groups['engine'][0]].server | default(inventory_hostname) | upper }}"
   loop: "{{ lookup('dict',permissions.users | default({}),wantlist=True) }}"
 
 # set permissions for groups
 - name: set group permissions
   when: permissions is defined and 'groups' in permissions
-  ds-perms:
+  ds_perms:
       project: "{{ project }}"
       user: "{{ is.user }}"
       password: "{{ is.password }}"
       isid: "{{ item.key }}"
       role: "{{ item.value.role }}"
       absent: "{{ item.value.absent | default(False) }}"
-      server: "{{ inventory_hostname | upper }}"
+      server: "{{ hostvars[groups['engine'][0]].server | default(inventory_hostname) | upper }}"
       idtype: group
   loop: "{{ lookup('dict',permissions.groups | default({}),wantlist=True) }}"

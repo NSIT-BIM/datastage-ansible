@@ -10,13 +10,13 @@
 # depends on ds-props.py
 - name: set properties
   when: properties is defined and properties[item] is defined
-  ds-props:
+  ds_props:
      project: "{{ project }}"
      dsproperty: "{{ item }}"
      value: "{{ properties[item] }}"
      props: "{{ project_facts.properties | default({}) }}"
      #loop: "{{ lookup('dict', configuration.properties.dsapi, wantlist=True) }}"
-  with_items: "{{ configuration.properties.dsapi }}"
+  with_items: "{{ configuration.properties.dsapi | intersect(properties.keys()) }}"
   register: result
   loop_control:
     label: "{{ item }} => {{ result['value']  }}"

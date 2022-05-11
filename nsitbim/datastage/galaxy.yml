@@ -1,0 +1,19 @@
+namespace: nsitbim
+name: datastage
+version: 1.0.0
+readme: README.md
+authors:
+- Adrien Ferrara <adrien.ferrara@nsitbim.fr>
+
+
+description: DataStage Administration
+license:
+- GPL-2.0-or-later
+
+tags: [datastage,ibm,administration,information server]
+
+
+repository: https://github.com/NSIT-BIM/datastage-ansible
+documentation: https://github.com/NSIT-BIM/datastage-ansible
+homepage: https://github.com/NSIT-BIM/datastage-ansible
+issues: https://github.com/NSIT-BIM/datastage-ansible/issues

@@ -6,7 +6,7 @@
 ---
 - name: set properties
   when: properties is defined
-  ds-iisprops:
+  ds_iisprops:
      key: "{{ item.key }}"
      value: "{{ item.value }}"
      absent: "{{ item.value.absent | default(False) }}"
